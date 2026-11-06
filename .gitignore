@@ -218,3 +218,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project specific data & model artifacts
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+results/predictions/*
+!results/predictions/.gitkeep
+results/figures/*
+!results/figures/.gitkeep
+*.parquet
+*.pt
+*.jsonocel
