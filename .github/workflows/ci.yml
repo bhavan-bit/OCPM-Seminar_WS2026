@@ -1,0 +1,45 @@
+name: CI & Code Quality
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-checks:
+    name: Code Quality & Artifact Guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for Forbidden Data Binaries
+        run: |
+          echo "Verifying no large data binaries or raw datasets are committed..."
+          FORBIDDEN_FILES=$(git diff --name-only origin/main HEAD 2>/dev/null | grep -E '\.(parquet|pt|jsonocel)$' || true)
+          if [ -n "$FORBIDDEN_FILES" ]; then
+            echo "ERROR: The following data binaries must not be committed to Git:"
+            echo "$FORBIDDEN_FILES"
+            exit 1
+          fi
+          echo "No forbidden data binaries detected."
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install Ruff Linter & Formatter
+        run: |
+          pip install ruff
+
+      - name: Run Ruff Lint Checks
+        run: |
+          ruff check src/
+
+      - name: Run Ruff Format Checks
+        run: |
+          ruff format --check src/

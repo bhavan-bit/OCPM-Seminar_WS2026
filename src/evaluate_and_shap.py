@@ -7,7 +7,6 @@
 """
 
 import argparse
-import pandas as pd
 
 
 def evaluate_stratified(predictions_path: str, entanglement_metadata_path: str):
@@ -29,3 +28,4 @@ if __name__ == "__main__":
     parser.add_argument("--eval", action="store_true", help="Run stratified evaluation")
     parser.add_argument("--shap", action="store_true", help="Run TreeSHAP analysis")
     args = parser.parse_args()
+

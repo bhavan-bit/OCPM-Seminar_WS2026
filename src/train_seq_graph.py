@@ -26,3 +26,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     train_seq_graph(args.model, args.tier, args.k, args.graphs, args.splits)
+

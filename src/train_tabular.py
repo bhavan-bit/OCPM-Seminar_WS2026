@@ -11,10 +11,6 @@ Logs both Test MAE and wall-clock training time.
 """
 
 import argparse
-import time
-import json
-import pandas as pd
-import numpy as np
 
 
 def train_and_evaluate(tier: int, model_name: str, master_parquet: str, splits_json: str):
@@ -33,3 +29,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     train_and_evaluate(args.tier, args.model, args.data, args.splits)
+
