@@ -15,7 +15,7 @@ Core Architectural Invariant (Rule 1):
 import argparse
 import logging
 import os
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -27,6 +27,7 @@ try:
     import ocpa.objects.log.importer.ocel.factory as ocel_import_factory
     from ocpa.algo.predictive_monitoring import factory as feature_factory
     from ocpa.algo.predictive_monitoring import tabular
+
     OCPA_AVAILABLE = True
 except ImportError:
     OCPA_AVAILABLE = False
@@ -60,17 +61,27 @@ EVENT_PRECEDING_ACTIVITIES = _resolve_factory_constant(
     "EVENT_PRECEDING_ACTIVITIES",
     _resolve_factory_constant("EVENT_PRECEDING_ACTIVITES", "event_preceding_activities"),
 )
-EVENT_PREVIOUS_TYPE_COUNT = _resolve_factory_constant("EVENT_PREVIOUS_TYPE_COUNT", "event_previous_type_count")
+EVENT_PREVIOUS_TYPE_COUNT = _resolve_factory_constant(
+    "EVENT_PREVIOUS_TYPE_COUNT", "event_previous_type_count"
+)
 EVENT_ACTIVITY = _resolve_factory_constant("EVENT_ACTIVITY", "event_activity")
 EVENT_CHAR_VALUE = _resolve_factory_constant("EVENT_CHAR_VALUE", "event_char_value")
 EVENT_SERVICE_TIME = _resolve_factory_constant("EVENT_SERVICE_TIME", "event_service")
-AGG_PREVIOUS_CHAR_VALUES = _resolve_factory_constant("EVENT_AGG_PREVIOUS_CHAR_VALUES", "event_aggregate_previous_char")
-SYNCHRONIZATION_TIME = _resolve_factory_constant("EVENT_SYNCHRONIZATION_TIME", "event_synchronization_time")
+AGG_PREVIOUS_CHAR_VALUES = _resolve_factory_constant(
+    "EVENT_AGG_PREVIOUS_CHAR_VALUES", "event_aggregate_previous_char"
+)
+SYNCHRONIZATION_TIME = _resolve_factory_constant(
+    "EVENT_SYNCHRONIZATION_TIME", "event_synchronization_time"
+)
 WAITING_TIME = _resolve_factory_constant("EVENT_WAITING_TIME", "event_waiting_time")
 POOLING_TIME = _resolve_factory_constant("EVENT_POOLING_TIME", "event_pooling_time")
-EVENT_PREVIOUS_OBJECT_COUNT = _resolve_factory_constant("EVENT_PREVIOUS_OBJECT_COUNT", "event_previous_object_count")
+EVENT_PREVIOUS_OBJECT_COUNT = _resolve_factory_constant(
+    "EVENT_PREVIOUS_OBJECT_COUNT", "event_previous_object_count"
+)
 EVENT_NUM_OBJECT = _resolve_factory_constant("EVENT_NUM_OF_OBJECTS", "num_objects")
-EVENT_PREVIOUS_ACTIVITY_COUNT = _resolve_factory_constant("EVENT_PREVIOUS_ACTIVITY_COUNT", "event_previous_activity_count")
+EVENT_PREVIOUS_ACTIVITY_COUNT = _resolve_factory_constant(
+    "EVENT_PREVIOUS_ACTIVITY_COUNT", "event_previous_activity_count"
+)
 
 
 def build_tier3_feature_set(
@@ -128,7 +139,9 @@ def build_tier3_feature_set(
     for act in activities:
         feature_set.append((EVENT_PREVIOUS_ACTIVITY_COUNT, (act,)))
 
-    logger.info("Constructed Tier 3 feature definition set with %d feature functions.", len(feature_set))
+    logger.info(
+        "Constructed Tier 3 feature definition set with %d feature functions.", len(feature_set)
+    )
     return feature_set
 
 
@@ -216,7 +229,9 @@ def extract_master_dataset(
     os.makedirs(os.path.dirname(os.path.abspath(output_parquet)), exist_ok=True)
 
     # Persist master Parquet
-    logger.info("Saving master Tier 3 DataFrame to: %s (shape: %s)", output_parquet, df_master.shape)
+    logger.info(
+        "Saving master Tier 3 DataFrame to: %s (shape: %s)", output_parquet, df_master.shape
+    )
     df_master.to_parquet(output_parquet, index=False)
 
     # Cache subgraphs for horizons k in {4, 8, 12} if subgraphs_output_dir is provided
@@ -242,6 +257,7 @@ def _cache_prefix_subgraphs(
     """
     try:
         import torch
+
         for k in horizons:
             subgraphs_k = []
             for fg in feature_storage.feature_graphs:
@@ -250,7 +266,9 @@ def _cache_prefix_subgraphs(
                 if len(nodes) >= k:
                     subgraphs_k.append((fg, k))
             target_file = os.path.join(output_dir, f"subgraphs_k{k}.pt")
-            logger.info("Caching %d subgraphs for horizon k=%d to %s", len(subgraphs_k), k, target_file)
+            logger.info(
+                "Caching %d subgraphs for horizon k=%d to %s", len(subgraphs_k), k, target_file
+            )
             torch.save(subgraphs_k, target_file)
     except ImportError:
         logger.warning("PyTorch not installed. Skipping .pt subgraph serialization.")

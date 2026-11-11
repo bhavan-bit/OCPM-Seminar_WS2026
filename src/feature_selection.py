@@ -66,13 +66,13 @@ def remove_highly_correlated_features(
     if not (0.0 < threshold <= 1.0):
         raise ValueError(f"Correlation threshold must be in (0, 1], got {threshold}")
 
-    logger.info("Computing Pearson correlation matrix on training set (threshold=%.2f)...", threshold)
+    logger.info(
+        "Computing Pearson correlation matrix on training set (threshold=%.2f)...", threshold
+    )
     corr_matrix = X_train.corr(method="pearson").abs()
 
     # Mask upper triangle to inspect unique pairs without self-correlation
-    upper_triangle = corr_matrix.where(
-        np.triu(np.ones(corr_matrix.shape, dtype=bool), k=1)
-    )
+    upper_triangle = corr_matrix.where(np.triu(np.ones(corr_matrix.shape, dtype=bool), k=1))
 
     to_drop: List[str] = [
         col for col in upper_triangle.columns if any(upper_triangle[col] > threshold)
@@ -204,7 +204,9 @@ def run_shap_rfe_pipeline(
     consecutive_degradations: int = 0
     iteration: int = 1
 
-    logger.info("Beginning SHAP-RFE loop with %d initial candidate features...", len(current_features))
+    logger.info(
+        "Beginning SHAP-RFE loop with %d initial candidate features...", len(current_features)
+    )
 
     while len(current_features) > 1:
         logger.info(
@@ -259,12 +261,14 @@ def run_shap_rfe_pipeline(
                 "Stopping criterion met: Validation MAE degraded for %d consecutive iterations.",
                 patience,
             )
-            history_records.append({
-                "iteration": iteration,
-                "n_features": len(current_features),
-                "val_mae": val_mae,
-                "dropped_features": [],
-            })
+            history_records.append(
+                {
+                    "iteration": iteration,
+                    "n_features": len(current_features),
+                    "val_mae": val_mae,
+                    "dropped_features": [],
+                }
+            )
             break
 
         # Compute SHAP importance strictly on X_val
@@ -284,12 +288,14 @@ def run_shap_rfe_pipeline(
             features_to_drop,
         )
 
-        history_records.append({
-            "iteration": iteration,
-            "n_features": len(current_features),
-            "val_mae": val_mae,
-            "dropped_features": features_to_drop,
-        })
+        history_records.append(
+            {
+                "iteration": iteration,
+                "n_features": len(current_features),
+                "val_mae": val_mae,
+                "dropped_features": features_to_drop,
+            }
+        )
 
         # Update feature list for next iteration
         current_features = [f for f in current_features if f not in features_to_drop]
@@ -299,7 +305,9 @@ def run_shap_rfe_pipeline(
 
     # Ensure best model is retrained if not captured or if final loop state differs
     if best_model is None or list(best_model.feature_names_in_) != best_features:
-        logger.info("Refitting final model on best feature subset (%d features)...", len(best_features))
+        logger.info(
+            "Refitting final model on best feature subset (%d features)...", len(best_features)
+        )
         best_model = xgb.XGBRegressor(**default_xgb_params)
         best_model.fit(X_tr_curr[best_features], y_train, verbose=False)
 
@@ -338,17 +346,25 @@ if __name__ == "__main__":
         # Pure noise features
         noise_features = {f"noise_{i}": np.random.normal(0, 1, size=n) for i in range(1, 10)}
 
-        df = pd.DataFrame({
-            "P2_elapsed_time": p2_elapsed,
-            "P5_sync_time": p5_sync_time,
-            "P10_waiting_time": p10_waiting_time,  # Should be pruned by correlation filter
-            "P9_service_time": p9_service_time,
-            "C5_activity_count": c5_activity_count,
-            **noise_features,
-        })
+        df = pd.DataFrame(
+            {
+                "P2_elapsed_time": p2_elapsed,
+                "P5_sync_time": p5_sync_time,
+                "P10_waiting_time": p10_waiting_time,  # Should be pruned by correlation filter
+                "P9_service_time": p9_service_time,
+                "C5_activity_count": c5_activity_count,
+                **noise_features,
+            }
+        )
 
         # Remaining time regression target (P3)
-        y = 50.0 - 0.8 * p2_elapsed - 1.2 * p5_sync_time + 0.5 * p9_service_time + np.random.normal(0, 1, n)
+        y = (
+            50.0
+            - 0.8 * p2_elapsed
+            - 1.2 * p5_sync_time
+            + 0.5 * p9_service_time
+            + np.random.normal(0, 1, n)
+        )
         return df, pd.Series(y, name="P3_remaining_time")
 
     X_tr, y_tr = generate_synthetic_ocpm_data(n_train)
@@ -374,4 +390,3 @@ if __name__ == "__main__":
     print("=" * 50)
     print("\nIteration History:")
     print(result.history)
-

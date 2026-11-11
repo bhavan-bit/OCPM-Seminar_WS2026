@@ -12,7 +12,6 @@ Stratifies test instances into:
 """
 
 import networkx as nx
-import pandas as pd
 
 
 def compute_entanglement_row(subgraph: nx.DiGraph, o3_offer_count: int, k: int) -> dict:
@@ -53,4 +52,3 @@ def compute_entanglement_row(subgraph: nx.DiGraph, o3_offer_count: int, k: int) 
         "o3_offers": o3_offer_count,
         "regime": regime,
     }
-
