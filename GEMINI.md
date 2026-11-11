@@ -25,11 +25,9 @@
   - PyTorch & PyTorch Geometric (PyG), scikit-learn, xgboost, catboost, shap
 - When adding or running scripts, always verify compatibility against these pinned libraries.
 
-### Rule 3: The $P5$ Synchronization Time Bug Fix
-- In `ocpa/algo/predictive_monitoring/event_based_features/extraction_functions.py`, ensure the mathematical definition of Synchronization Time ($P5$) is strictly respected:
-  - When an event has $\le 1$ predecessor ($\text{deg}^-(v) \le 1$), return `0.0`.
-  - Never conflate $P5$ with Waiting Time ($P10$: time since last predecessor).
-  - For $> 1$ predecessors: $\max(\text{timestamps}) - \min(\text{timestamps})$.
+### Rule 3: Standard OCPA Synchronization Time
+- Use the standard `ocpa` library implementation directly for Synchronization Time ($P5$) and performance metrics.
+- No monkey-patching or manual overrides needed for the core `ocpa` library routines.
 
 ### Rule 4: Deterministic Splits & Fair Benchmarking
 - Always use a fixed `0.7 / 0.3` train/test split with `0.2` validation split.
@@ -86,8 +84,8 @@ ocpm-seminar/
 │       ├── entanglement_metadata.parquet
 │       └── subgraphs_k{4,8,12}.pt
 ├── src/
-│   ├── patch_ocpa_p5.py            # P5 synchronization patch
 │   ├── extract_features.py         # One-time master Tier 3 extractor
+│   ├── feature_selection.py        # SHAP-based Recursive Feature Elimination (SHAP-RFE)
 │   ├── extract_entanglement.py     # Topological & regime computation
 │   ├── train_tabular.py            # OLS, Ridge, XGBoost, CatBoost
 │   ├── train_seq_graph.py          # PyG GCN & PyTorch LSTM

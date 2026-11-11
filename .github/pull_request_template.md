@@ -11,3 +11,4 @@
 - [ ] **No Artifact Leaks**: No `.parquet`, `.pt`, or raw `.jsonocel`/`.csv` files staged in git.
 - [ ] **Fast Prototyping Tested**: Verified on `--debug 500` slice before running full BPIC17.
 - [ ] **Code Quality**: Formatted and linted cleanly (`ruff` / `black`).
+

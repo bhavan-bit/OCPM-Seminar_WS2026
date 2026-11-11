@@ -27,7 +27,7 @@ Computing graph metrics and object interactions on `BPIC17` is computationally i
 [Stage 1: One-Time Extraction & Caching]
    BPIC17 OCEL (.jsonocel / .csv)
         │
-        ├──► Patched ocpa P5 Synchronization Time
+        ├──► Extract Features via Standard OCPA Library
         ├──► Compute Full Tier 3 Feature Superset
         ├──► Extract Prefix Subgraphs (k ∈ {4, 8, 12})
         └──► Compute Topological Complexity Metadata (Δdeg, β1, O3)
@@ -56,8 +56,8 @@ Computing graph metrics and object interactions on `BPIC17` is computationally i
 │   └── processed/                  # Cached parquet features and PyG subgraph tensors
 ├── src/
 │   ├── __init__.py
-│   ├── patch_ocpa_p5.py            # P5 Synchronization Time boundary condition patch
 │   ├── extract_features.py         # One-time master Tier 3 feature extractor
+│   ├── feature_selection.py        # SHAP-based Recursive Feature Elimination (SHAP-RFE)
 │   ├── extract_entanglement.py     # Topological complexity & regime assigner
 │   ├── train_tabular.py            # OLS, RidgeCV, XGBoost, CatBoost (MAE optimization)
 │   ├── train_seq_graph.py          # PyG GCN & PyTorch LSTM models
@@ -96,12 +96,7 @@ pip install -e ./ocpa
 
 ## 🔬 Experimental Workflow
 
-### 1. Synchronization Time ($P5$) Patch
-The original `ocpa` implementation conflated single-predecessor nodes ($\text{deg}^-(v) \le 1$) with Waiting Time ($P10$). Our patch enforces the mathematical boundary condition:
-$$\text{deg}^-(v) \le 1 \implies P5 = 0.0$$
-Apply automatically via `from src.patch_ocpa_p5 import apply_p5_patch`.
-
-### 2. Feature Extraction (Tier 3 Master)
+### 1. Feature Extraction (Tier 3 Master via OCPA)
 ```bash
 # Debug run (fast test on first 500 executions)
 python -m src.extract_features --raw data/raw/bpic17.jsonocel --debug 500
