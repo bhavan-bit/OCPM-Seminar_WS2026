@@ -89,7 +89,8 @@ ocpm-seminar/
 │   ├── extract_entanglement.py     # Topological & regime computation
 │   ├── train_tabular.py            # OLS, Ridge, XGBoost, CatBoost
 │   ├── train_seq_graph.py          # PyG GCN & PyTorch LSTM
-│   └── evaluate_and_shap.py        # Stratified MAE tables + TreeSHAP
+│   ├── evaluate_and_shap.py        # Stratified MAE tables + TreeSHAP
+│   └── sample_aoe_sessions.py      # OCEL 2.0 SQLite CTE session sampling
 ├── results/
 │   ├── predictions/                # Test prediction tables (.parquet / .csv)
 │   └── figures/                    # Publication-ready plots for report/slides

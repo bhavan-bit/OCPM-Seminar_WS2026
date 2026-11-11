@@ -61,7 +61,8 @@ Computing graph metrics and object interactions on `BPIC17` is computationally i
 │   ├── extract_entanglement.py     # Topological complexity & regime assigner
 │   ├── train_tabular.py            # OLS, RidgeCV, XGBoost, CatBoost (MAE optimization)
 │   ├── train_seq_graph.py          # PyG GCN & PyTorch LSTM models
-│   └── evaluate_and_shap.py        # Stratified evaluation tables & TreeSHAP
+│   ├── evaluate_and_shap.py        # Stratified evaluation tables & TreeSHAP
+│   └── sample_aoe_sessions.py      # OCEL 2.0 SQLite CTE session sampling & event extraction
 ├── results/
 │   ├── predictions/                # Per-event test predictions (y_true, y_pred)
 │   └── figures/                    # Publication-grade figures for report and slides
@@ -105,6 +106,12 @@ python -m src.extract_features --raw data/raw/bpic17.jsonocel --debug 500
 python -m src.extract_features --raw data/raw/bpic17.jsonocel
 ```
 
+### 2. Feature Selection (SHAP-RFE Pipeline)
+```bash
+# Run collinearity pruning and validation SHAP recursive feature elimination
+python -m src.feature_selection
+```
+
 ### 3. Model Training
 ```bash
 # Tabular models (XGBoost optimizing MAE on Tier 3)
@@ -121,6 +128,16 @@ python -m src.evaluate_and_shap --eval
 
 # TreeSHAP feature importance analysis
 python -m src.evaluate_and_shap --shap
+```
+
+### 5. OCEL 2.0 Dataset Subsampling (Age of Empires II)
+Extract related events for randomly sampled session objects from an OCEL 2.0 SQLite database using a single CTE SQL query:
+```bash
+# Sample 5 sessions and preview events
+python -m src.sample_aoe_sessions --n-sessions 5
+
+# Sample and export to Parquet or CSV
+python -m src.sample_aoe_sessions --n-sessions 5 --output data/processed/sampled_sessions.parquet
 ```
 
 ---
