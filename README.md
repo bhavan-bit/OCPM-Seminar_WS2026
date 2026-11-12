@@ -66,6 +66,9 @@ Computing graph metrics and object interactions on `BPIC17` is computationally i
 ├── results/
 │   ├── predictions/                # Per-event test predictions (y_true, y_pred)
 │   └── figures/                    # Publication-grade figures for report and slides
+├── environment.yml                 # Conda environment specification (Python 3.9 + pip)
+├── requirements.txt                # Pinned Python package versions for reproducibility
+├── ruff.toml                       # Linter & formatter configuration (targets Python 3.9)
 ├── GEMINI.md                       # Workspace agent & developer guidelines
 ├── AGENTS.md                       # Symlink to workspace guidelines
 ├── LICENSE                         # License definition
@@ -76,21 +79,19 @@ Computing graph metrics and object interactions on `BPIC17` is computationally i
 
 ## ⚙️ Environment Setup
 
-Because the original `ocpa` codebase dates from 2022, modern `pandas >= 2.0` and `networkx >= 3.0` introduce breaking API incompatibilities (e.g. `df.append()`, `nx.from_scipy_sparse_matrix`).
+Because the original `ocpa` codebase dates from 2022, modern `pandas >= 2.0` and `networkx >= 3.0` introduce breaking API incompatibilities (e.g. `df.append()`, `nx.from_scipy_sparse_matrix`). All dependencies are strictly pinned in [`requirements.txt`](file:///home/nmartin/Documents/Seminar/Project/OCPM-Seminar_WS2026/requirements.txt) and [`environment.yml`](file:///home/nmartin/Documents/Seminar/Project/OCPM-Seminar_WS2026/environment.yml).
 
-Create an environment with pinned dependencies:
+### Option A: One-Step Conda Setup (Recommended)
+```bash
+conda env create -f environment.yml
+conda activate ocpm_seminar
+```
 
+### Option B: Manual Conda + Pip Setup
 ```bash
 conda create -n ocpm_seminar python=3.9 -y
 conda activate ocpm_seminar
-
-# Pinned dependencies
-pip install "pandas<2.0.0" "numpy<1.24.0" "networkx<3.0" scikit-learn xgboost catboost shap
-pip install torch torchvision torchaudio torch-geometric
-
-# Install ocpa
-git clone https://github.com/ocpm/ocpa
-pip install -e ./ocpa
+pip install -r requirements.txt
 ```
 
 ---

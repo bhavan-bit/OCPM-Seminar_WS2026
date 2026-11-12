@@ -27,6 +27,14 @@ jobs:
           fi
           echo "No forbidden data binaries detected."
 
+      - name: Verify Reproducibility & Legacy OCPA Constraints
+        run: |
+          echo "Checking requirements.txt for pinned OCPA compatibility invariants..."
+          grep -Eq "^pandas==1\." requirements.txt || (echo "ERROR: pandas must be pinned < 2.0.0 in requirements.txt" && exit 1)
+          grep -Eq "^numpy==1\.2[0-3]\." requirements.txt || (echo "ERROR: numpy must be pinned < 1.24.0 in requirements.txt" && exit 1)
+          grep -Eq "^networkx==2\." requirements.txt || (echo "ERROR: networkx must be pinned < 3.0 in requirements.txt" && exit 1)
+          echo "All dependency constraints verified."
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
